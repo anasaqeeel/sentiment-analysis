@@ -4,11 +4,24 @@ import { createOpenAI } from "@ai-sdk/openai";
 
 export async function POST(request: NextRequest) {
   try {
+    // Debug environment variables
+    console.log("Environment check:");
+    console.log("NODE_ENV:", process.env.NODE_ENV);
+    console.log("OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY);
+    console.log(
+      "OPENAI_API_KEY length:",
+      process.env.OPENAI_API_KEY?.length || 0
+    );
+
     // Explicitly check for API key
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       console.error("OpenAI API key is missing from environment variables");
+      console.error(
+        "Available env vars:",
+        Object.keys(process.env).filter((key) => key.includes("OPENAI"))
+      );
       return NextResponse.json(
         { error: "OpenAI API key is not configured" },
         { status: 500 }
