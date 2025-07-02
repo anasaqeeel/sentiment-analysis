@@ -1,9 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 export async function POST(request: NextRequest) {
   try {
+    // Explicitly check for API key
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      console.error("OpenAI API key is missing from environment variables");
+      return NextResponse.json(
+        { error: "OpenAI API key is not configured" },
+        { status: 500 }
+      );
+    }
+
     const { review } = await request.json();
 
     if (!review || typeof review !== "string") {
@@ -27,6 +38,11 @@ Main Issue: [What is the core issue/problem mentioned]
 Customer Wants: [What is the user expecting or looking for?]
 
 Please be concise and accurate in your analysis.`;
+
+    // Create OpenAI client with explicit API key
+    const openai = createOpenAI({
+      apiKey: apiKey,
+    });
 
     const { text } = await generateText({
       model: openai("gpt-4"),
