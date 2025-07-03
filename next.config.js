@@ -9,7 +9,6 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
-    // Remove the experimental optimizeCss that's causing the critters error
 }
 
-export default nextConfig
+module.exports = nextConfig
